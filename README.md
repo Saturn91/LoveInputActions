@@ -10,7 +10,7 @@ You can either load in the folder `src` directly into your love2d project or use
 
 ```lua
 local packages = {
-  "libs/inputActions",
+  "libs/inputActions/?.lua",
 }
 
 local current = love.filesystem.getRequirePath and love.filesystem.getRequirePath() or "?.lua;"
