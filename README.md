@@ -50,3 +50,7 @@ function love.update(dt)
     end
 end
 ```
+
+# Edit config (e.g remap actions)
+
+To update the config, just rerun `InputAction.init(inputConfig)` with a new config.
