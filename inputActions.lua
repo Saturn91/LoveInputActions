@@ -11,6 +11,10 @@ local keyState = {}
 local justPressed = {}
 local justReleased = {}
 
+local lastPressedKey = nil
+local lastKeyTimer = 0
+local KEY_RESET_TIME = 0.3  -- seconds
+
 local function arrayToSet(arr)
     local set = {}
     for _, v in ipairs(arr) do set[v] = true end
@@ -34,7 +38,7 @@ function InputAction.init(config)
     justReleased = {}
 end
 
-function InputAction.update()
+function InputAction.update(dt)
     for action, keys in pairs(actions) do
         local pressed = false
         for key in pairs(keys) do
@@ -55,6 +59,14 @@ function InputAction.update()
         end
         keyState[action] = pressed
     end
+    
+    -- Update last key timer
+    if lastKeyTimer > 0 then
+        lastKeyTimer = lastKeyTimer - dt
+        if lastKeyTimer <= 0 then
+            lastPressedKey = nil
+        end
+    end
 end
 
 function InputAction.isPressed(action)
@@ -67,6 +79,17 @@ end
 
 function InputAction.isJustReleased(action)
     return justReleased[action] or false
+end
+
+function love.keypressed(key, _scancode, isrepeat)
+    if not isrepeat then 
+        lastPressedKey = key
+        lastKeyTimer = KEY_RESET_TIME
+    end
+end
+
+function InputAction.getLastPressedKey()
+    return lastPressedKey
 end
 
 return InputAction

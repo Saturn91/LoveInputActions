@@ -13,7 +13,7 @@ function love.load()
 end
 
 function love.update(dt)
-    InputAction.update()
+    InputAction.update(dt)
     if InputAction.isJustReleased("btn1") then
         print("just released btn1")
     end
@@ -22,6 +22,10 @@ function love.update(dt)
     end
     if InputAction.isPressed("btn1") then
         print("pressed btn1")
+    end
+
+    if InputAction.getLastPressedKey() then
+        print("Last pressed key: " .. InputAction.getLastPressedKey())
     end
 end
 
