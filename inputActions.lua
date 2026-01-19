@@ -11,6 +11,10 @@ local keyState = {}
 local justPressed = {}
 local justReleased = {}
 
+local mouseState = {}
+local mouseJustPressed = {}
+local mouseJustReleased = {}
+
 local lastPressedKey = nil
 local lastKeyTimer = 0
 local KEY_RESET_TIME = 0.3  -- seconds
@@ -36,6 +40,9 @@ function InputAction.init(config)
     keyState = {}
     justPressed = {}
     justReleased = {}
+    mouseState = {}
+    mouseJustPressed = {}
+    mouseJustReleased = {}
 end
 
 function InputAction.update(dt)
@@ -67,6 +74,23 @@ function InputAction.update(dt)
             lastPressedKey = nil
         end
     end
+    
+    -- Update mouse buttons
+    for button = 1, 3 do
+        local pressed = love.mouse.isDown(button)
+        local action = "mouse" .. button
+        if pressed and not mouseState[action] then
+            mouseJustPressed[action] = true
+        else
+            mouseJustPressed[action] = false
+        end
+        if not pressed and mouseState[action] then
+            mouseJustReleased[action] = true
+        else
+            mouseJustReleased[action] = false
+        end
+        mouseState[action] = pressed
+    end
 end
 
 function InputAction.isPressed(action)
@@ -79,6 +103,18 @@ end
 
 function InputAction.isJustReleased(action)
     return justReleased[action] or false
+end
+
+function InputAction.isMousePressed(button)
+    return mouseState["mouse" .. button] or false
+end
+
+function InputAction.isMouseJustPressed(button)
+    return mouseJustPressed["mouse" .. button] or false
+end
+
+function InputAction.isMouseJustReleased(button)
+    return mouseJustReleased["mouse" .. button] or false
 end
 
 function love.keypressed(key, _scancode, isrepeat)
