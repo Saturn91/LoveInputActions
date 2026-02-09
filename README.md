@@ -41,7 +41,7 @@ function love.update(dt)
         print("just released")
     end
 
-    if InputAction.isJustPressed("btn1") then
+    if InputAction.isJustPressed("btn1", 150) then
         print("just pressed")
     end
 
@@ -50,6 +50,8 @@ function love.update(dt)
     end
 end
 ```
+
+Note: `isJustPressed(action, repeatMs)` accepts an optional `repeatMs` parameter (in milliseconds) to repeat the press signal at intervals while the action is held.
 
 # Edit config (e.g remap actions)
 

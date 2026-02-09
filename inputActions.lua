@@ -15,6 +15,8 @@ local mouseState = {}
 local mouseJustPressed = {}
 local mouseJustReleased = {}
 
+local repeatTimers = {}
+
 local lastPressedKey = nil
 local lastKeyTimer = 0
 local KEY_RESET_TIME = 0.3  -- seconds
@@ -43,6 +45,7 @@ function InputAction.init(config)
     mouseState = {}
     mouseJustPressed = {}
     mouseJustReleased = {}
+    repeatTimers = {}
 end
 
 function InputAction.update(dt)
@@ -65,6 +68,18 @@ function InputAction.update(dt)
             justReleased[action] = false
         end
         keyState[action] = pressed
+    end
+    
+    -- Update repeat timers
+    for action, _ in pairs(actions) do
+        if keyState[action] then
+            if not repeatTimers[action] then
+                repeatTimers[action] = 0
+            end
+            repeatTimers[action] = repeatTimers[action] + dt
+        else
+            repeatTimers[action] = nil
+        end
     end
     
     -- Update last key timer
@@ -97,7 +112,18 @@ function InputAction.isPressed(action)
     return keyState[action] or false
 end
 
-function InputAction.isJustPressed(action)
+function InputAction.isJustPressed(action, repeatMs)
+    if not repeatMs then
+        return justPressed[action] or false
+    end
+    if not keyState[action] then
+        return false
+    end
+    local interval = repeatMs / 1000
+    if repeatTimers[action] and repeatTimers[action] >= interval then
+        repeatTimers[action] = repeatTimers[action] - interval
+        return true
+    end
     return justPressed[action] or false
 end
 

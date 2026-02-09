@@ -17,11 +17,9 @@ function love.update(dt)
     if InputAction.isJustReleased("btn1") then
         print("just released btn1")
     end
-    if InputAction.isJustPressed("btn1") then
+    -- Repeat mechanic: returns true every 150ms while btn1 is held
+    if InputAction.isJustPressed("btn1", 150) then
         print("just pressed btn1")
-    end
-    if InputAction.isPressed("btn1") then
-        print("pressed btn1")
     end
 
     if InputAction.getLastPressedKey() then
