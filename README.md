@@ -26,8 +26,10 @@ The bellow code shows the initial setup
 InputAction = require("libs.inputActions/inputActions")
 
 local inputConfig = {
-    InputAction.new("btn1", ["space"]),
-    InputAction.new("btn2", ["lctrl"]),
+    InputAction.new("btn1", {"space"}),
+    InputAction.new("btn2", {"ctrl"}),
+    InputAction.new("copy", {{"ctrl", "c"}})
+    InputAction.new("paste", {{"ctrl", "v"}})
 }
 
 function love.load()
@@ -35,7 +37,7 @@ function love.load()
 end
 
 function love.update(dt)
-    InputAction.update()
+    InputAction.update(dt)
     
     if InputAction.isJustReleased("btn1") then
         print("just released")
@@ -47,6 +49,14 @@ function love.update(dt)
 
     if InputAction.isPressed("btn1") then
         print("pressed")
+    end
+
+    if InputAction.isPressed("copy") then
+        print("copy")
+    end
+
+    if Input.isPressed("paster") then
+        print("paster")
     end
 end
 ```

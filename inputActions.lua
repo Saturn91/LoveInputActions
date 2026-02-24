@@ -21,12 +21,6 @@ local lastPressedKey = nil
 local lastKeyTimer = 0
 local KEY_RESET_TIME = 0.3  -- seconds
 
-local function arrayToSet(arr)
-    local set = {}
-    for _, v in ipairs(arr) do set[v] = true end
-    return set
-end
-
 function InputAction.new(name, keys)
     local self = setmetatable({}, InputAction)
     self.name = name
@@ -37,7 +31,7 @@ end
 function InputAction.init(config)
     actions = {}
     for _, action in ipairs(config) do
-        actions[action.name] = arrayToSet(action.keys)
+        actions[action.name] = action.keys
     end
     keyState = {}
     justPressed = {}
@@ -51,8 +45,19 @@ end
 function InputAction.update(dt)
     for action, keys in pairs(actions) do
         local pressed = false
-        for key in pairs(keys) do
-            if love.keyboard.isDown(key) then
+        for _, key_or_combo in ipairs(keys) do
+            local combo_pressed = true
+            if type(key_or_combo) == "string" then
+                combo_pressed = love.keyboard.isDown(key_or_combo)
+            elseif type(key_or_combo) == "table" then
+                for _, k in ipairs(key_or_combo) do
+                    if not love.keyboard.isDown(k) then
+                        combo_pressed = false
+                        break
+                    end
+                end
+            end
+            if combo_pressed then
                 pressed = true
                 break
             end
