@@ -15,6 +15,10 @@ local mouseState = {}
 local mouseJustPressed = {}
 local mouseJustReleased = {}
 
+local individualKeyState = {}
+local individualKeyJustPressed = {}
+local individualKeyJustReleased = {}
+
 local repeatTimers = {}
 
 local lastPressedKey = nil
@@ -39,6 +43,9 @@ function InputAction.init(config)
     mouseState = {}
     mouseJustPressed = {}
     mouseJustReleased = {}
+    individualKeyState = {}
+    individualKeyJustPressed = {}
+    individualKeyJustReleased = {}
     repeatTimers = {}
 end
 
@@ -111,6 +118,11 @@ function InputAction.update(dt)
         end
         mouseState[action] = pressed
     end
+    
+    -- Reset individual key just pressed/released states for next frame
+    individualKeyJustPressed = {}
+    individualKeyJustReleased = {}
+end
 end
 
 function InputAction.isPressed(action)
@@ -152,11 +164,34 @@ function love.keypressed(key, _scancode, isrepeat)
     if not isrepeat then 
         lastPressedKey = key
         lastKeyTimer = KEY_RESET_TIME
+        
+        -- Track individual key presses
+        if not individualKeyState[key] then
+            individualKeyJustPressed[key] = true
+        end
+        individualKeyState[key] = true
     end
 end
 
-function InputAction.getLastPressedKey()
-    return lastPressedKey
+function love.keyreleased(key)
+    individualKeyState[key] = false
+    individualKeyJustReleased[key] = true
 end
 
-return InputAction
+function love.mousereleased(x, y, button)
+    local action = "mouse" .. button
+    mouseState[action] = false
+    mouseJustReleased[action] = true
+end
+
+function InputAction.isKeyPressed(key)
+    return individualKeyState[key] or false
+end
+
+function InputAction.isKeyJustPressed(key)
+    return individualKeyJustPressed[key] or false
+end
+
+function InputAction.isKeyJustReleased(key)
+    return individualKeyJustReleased[key] or false
+end
