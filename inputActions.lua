@@ -123,7 +123,6 @@ function InputAction.update(dt)
     individualKeyJustPressed = {}
     individualKeyJustReleased = {}
 end
-end
 
 function InputAction.isPressed(action)
     return keyState[action] or false
@@ -195,3 +194,9 @@ end
 function InputAction.isKeyJustReleased(key)
     return individualKeyJustReleased[key] or false
 end
+
+function InputAction.getLastPressedKey()
+    return lastPressedKey
+end
+
+return InputAction
