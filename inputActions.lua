@@ -50,6 +50,14 @@ function InputAction.init(config)
 end
 
 function InputAction.update(dt)
+    -- Reset just pressed/released states at the beginning of each frame
+    justPressed = {}
+    justReleased = {}
+    mouseJustPressed = {}
+    mouseJustReleased = {}
+    individualKeyJustPressed = {}
+    individualKeyJustReleased = {}
+    
     for action, keys in pairs(actions) do
         local pressed = false
         for _, key_or_combo in ipairs(keys) do
@@ -118,10 +126,6 @@ function InputAction.update(dt)
         end
         mouseState[action] = pressed
     end
-    
-    -- Reset individual key just pressed/released states for next frame
-    individualKeyJustPressed = {}
-    individualKeyJustReleased = {}
 end
 
 function InputAction.isPressed(action)
