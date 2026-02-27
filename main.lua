@@ -35,6 +35,12 @@ function love.update(dt)
     if InputAction.getLastPressedKey() then
         print("Last pressed key: " .. InputAction.getLastPressedKey())
     end
+
+    if InputAction.isKeyJustPressed("a") then
+        print("Key 'a' was just pressed")
+    end
+
+    InputAction.clearJustPressed()
 end
 
 function love.draw()
