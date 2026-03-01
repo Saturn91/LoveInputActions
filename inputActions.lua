@@ -143,16 +143,33 @@ function InputAction.isJustReleased(action)
     return justReleased[action] or false
 end
 
+local function normalizeMouseButton(button)
+    if type(button) == "number" then
+        return "mouse" .. button
+    elseif type(button) == "string" then
+        -- Accept both "mouse1" and "1"
+        if button:match("^mouse%d$") then
+            return button
+        else
+            return "mouse" .. button
+        end
+    end
+    return nil
+end
+
 function InputAction.isMousePressed(button)
-    return mouseState["mouse" .. button] or false
+    local key = normalizeMouseButton(button)
+    return key and mouseState[key] or false
 end
 
 function InputAction.isMouseJustPressed(button)
-    return mouseJustPressed["mouse" .. button] or false
+    local key = normalizeMouseButton(button)
+    return key and mouseJustPressed[key] or false
 end
 
 function InputAction.isMouseJustReleased(button)
-    return mouseJustReleased["mouse" .. button] or false
+    local key = normalizeMouseButton(button)
+    return key and mouseJustReleased[key] or false
 end
 
 function love.keypressed(key, _scancode, isrepeat)
@@ -171,12 +188,6 @@ end
 function love.keyreleased(key)
     individualKeyState[key] = false
     individualKeyJustReleased[key] = true
-end
-
-function love.mousereleased(x, y, button)
-    local action = "mouse" .. button
-    mouseState[action] = false
-    mouseJustReleased[action] = true
 end
 
 function InputAction.isKeyPressed(key)

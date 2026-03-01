@@ -40,6 +40,22 @@ function love.update(dt)
         print("Key 'a' was just pressed")
     end
 
+    if InputAction.isMouseJustPressed("mouse1") then
+        print("Left mouse button just pressed")
+    end
+
+    if InputAction.isMouseJustReleased("mouse1") then
+        print("Left mouse button just released")
+    end
+
+    if InputAction.isMouseJustPressed("mouse2") then
+        print("Right mouse button just pressed")
+    end
+
+    if InputAction.isMouseJustReleased("mouse2") then
+        print("Right mouse button just released")
+    end
+
     InputAction.clearJustPressed()
 end
 
